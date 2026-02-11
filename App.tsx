@@ -1,20 +1,30 @@
+// Dependencies
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from '@expo-google-fonts/bebas-neue/useFonts';
+import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue/400Regular';
+import { Abel_400Regular } from '@expo-google-fonts/abel/400Regular';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+// Views
+import LoadingScreen from './app/loading';
+import MainScreen from './app/main';
 
 export default function App() {
+  const queryClient = new QueryClient();
+
+  let [fontsLoaded] = useFonts({
+    BebasNeue_400Regular,
+    Abel_400Regular
+  });
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        {fontsLoaded ? <MainScreen /> : <LoadingScreen />}
+      </SafeAreaProvider>
+      <StatusBar style="light" />
+    </QueryClientProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
