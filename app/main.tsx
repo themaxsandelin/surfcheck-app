@@ -1,49 +1,63 @@
 // Dependencies
 import Constants from 'expo-constants';
 import { useState, useRef, useMemo } from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Share, Alert, Linking, Dimensions } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { IconLoader, IconReload, IconChartBar, IconShare2 } from '@tabler/icons-react-native';
-import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import { captureRef } from 'react-native-view-shot';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
+import { DateTime } from 'luxon';
+
+// Components
+import Polygon from './icons/polygon';
 
 interface ApiResponse {
-  response: string
+  response: string;
   weatherData: {
-    time: string
+    time: string;
+    location: {
+      name: string;
+      lat: number;
+      lon: number;
+    };
     temperature: {
-      value: number
-      unit: string
-    },
+      value: number;
+      unit: string;
+    };
     wind: {
-      speed: number
-      speedUnit: string
-      direction: string
-    },
+      speed: number;
+      speedUnit: string;
+      direction: string;
+    };
     waves: {
-      height: number
-      heightUnit: string
-      direction: string
-    },
+      height: number;
+      heightUnit: string;
+      direction: string;
+    };
     swell: {
-      height: number
-      heightUnit: string
-      direction: string
-    }
-  }
+      height: number;
+      heightUnit: string;
+      direction: string;
+    };
+    tide: {
+      height: number;
+      heightUnit: string;
+    };
+  };
 }
 
 export default function Main() {
   const imageRef = useRef<View>(null);
   const [mediaLibraryPermission, requestMediaLibraryPermission] = MediaLibrary.usePermissions();
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
   const [surfKey, setSurfKey] = useState<number>(0);
   const [isDeetsOpen, setIsDeetsOpen] = useState<boolean>(false);
+  const [showData, setShowData] = useState<boolean>(false);
 
-  const { data, isLoading, error } = useQuery<ApiResponse>({
+  const { data, isLoading } = useQuery<ApiResponse>({
     queryKey: ['surfcheck', surfKey],
     queryFn: async () => {
       const response = await fetch('https://surfcheck-backend-production.up.railway.app/should-i-surf', {
@@ -53,8 +67,31 @@ export default function Main() {
       });
       return response.json();
     },
-    enabled: surfKey > 0,
+    enabled: surfKey > 0 && showData,
   });
+
+  const tideHeight = useMemo(() => {
+    if (!data) {
+      return '';
+    }
+    if (data.weatherData.tide.height === 0) {
+      return 'Even';
+    }
+
+    return data.weatherData.tide.height < 0 ? 'Low' : 'High';
+  }, [data]);
+
+  const tideRotate = useMemo(() => {
+    return tideHeight === 'Low' ? '180deg' : '0deg';
+  }, [tideHeight]);
+
+  const dataTime = useMemo(() => {
+    if (!data) {
+      return '';
+    }
+
+    return DateTime.fromISO(data.weatherData.time, { zone: 'UTC' }).toFormat('h:mm a');
+  }, [data]);
 
   const deets = useMemo(() => {
     if (!data) {
@@ -62,6 +99,10 @@ export default function Main() {
     }
 
     return [
+      {
+        label: 'Location',
+        value: data.weatherData.location.name,
+      },
       {
         label: 'Wave Height',
         value: `${data.weatherData.waves.height} ${data.weatherData.waves.heightUnit}`,
@@ -79,22 +120,44 @@ export default function Main() {
         value: `${data.weatherData.temperature.value} ${data.weatherData.temperature.unit}`,
       },
       {
+        label: 'Tide',
+        value: `${data.weatherData.tide.height} ${data.weatherData.tide.heightUnit} / ${tideHeight} @ ${dataTime}`,
+      },
+      {
         label: 'Conditions',
-        value: 'Go surf',
+        value: "It'll do",
       }
     ];
   }, [data]);
 
+  const homeTextDetails = useMemo(() => {
+    if (SCREEN_WIDTH < 400) {
+      return {
+        fontSize: 95,
+        lineHeight: 105,
+      };
+    } else if (SCREEN_WIDTH < 440) {
+      return {
+        fontSize: 110,
+        lineHeight: 120,
+      };
+    }
+    return {
+      fontSize: 125,
+      lineHeight: 135,
+    };
+  }, [SCREEN_WIDTH]);
+
   return (
     <SafeAreaView style={styles.homeContainer}>
-      {data && !isLoading && (
+      {showData && data && !isLoading && (
         <View style={{
           ...styles.dataContainer,
           opacity: isDeetsOpen ? 0 : 1,
         }}>
           <View style={styles.dataContentContainer}>
             <View style={styles.dataContentWrapper} ref={imageRef} collapsable={false}>
-              <Text style={{ fontFamily: 'BebasNeue_400Regular', fontSize: 125, lineHeight: 135, color: '#fff', textAlign: 'center', fontWeight: 400 }}>Yes</Text>
+              <Text style={{ fontFamily: 'BebasNeue_400Regular', ...homeTextDetails, color: '#fff', textAlign: 'center', fontWeight: 400 }}>Yes</Text>
               <Text style={{ fontFamily: 'Abel_400Regular', fontSize: 45, lineHeight: 58, color: '#fff', textAlign: 'center', fontWeight: 400 }}>
                 {data.response}
               </Text>
@@ -106,6 +169,7 @@ export default function Main() {
                 };
               }}
               onPress={() => {
+                setShowData(false);
                 setSurfKey(prev => prev + 1);
               }}
             >
@@ -135,9 +199,31 @@ export default function Main() {
             <View style={{ ...styles.dataButtonWrapper, paddingLeft: 8 }}>
               <Pressable
                 onPress={async () => {
-                  if (mediaLibraryPermission?.status === 'granted') {
-                    const screenshot = await captureRef(imageRef);
-                    await Sharing.shareAsync(screenshot);
+                  if (mediaLibraryPermission) {
+                    if (mediaLibraryPermission.status === 'granted') {
+                      const screenshot = await captureRef(imageRef);
+                      await Share.share({
+                        message: "Should I surf today?",
+                        url: screenshot,
+                      });
+                    } else if (mediaLibraryPermission.status === 'denied') {
+                      if (mediaLibraryPermission.canAskAgain) {
+                        await requestMediaLibraryPermission();
+                      } else {
+                        Alert.alert("Action Required", "Please grant permission to your device's media library to share the screenshot.", [
+                          {
+                            text: 'Cancel',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Open Settings',
+                            onPress: () => {
+                              Linking.openSettings();
+                            },
+                          }
+                        ]);
+                      }
+                    }
                   } else {
                     await requestMediaLibraryPermission();
                   }
@@ -159,7 +245,7 @@ export default function Main() {
       {isDeetsOpen && (
         <View style={styles.deetsContainer}>
           <View style={styles.deetsCard}>
-            <Text style={styles.deetsTitle}>It is what it is</Text>
+            <Text style={styles.deetsTitle}>Go get some</Text>
             <FlatList
               scrollEnabled={false}
               data={deets}
@@ -167,7 +253,16 @@ export default function Main() {
               renderItem={({ item, index }) => (
                 <View style={{...styles.deetsItem, borderBottomWidth: index === deets.length - 1 ? 0 : 2}}>
                   <Text style={styles.deetsItemText}>{item.label}</Text>
-                  <Text style={styles.deetsItemText}>{item.value}</Text>
+                  <View style={styles.deetsItemTextWrapper}>
+                    {item.label === 'Tide' && (
+                      <Polygon
+                        color="#fff"
+                        size={10}
+                        style={{ transform: [{ rotate: tideRotate }] }}
+                      />
+                    )}
+                    <Text style={styles.deetsItemText}>{item.value}</Text>
+                  </View>
                 </View>
               )}
             />
@@ -192,7 +287,7 @@ export default function Main() {
           <IconLoader size={24} stroke="#fff" opacity={0.5} />
         </View>
       )}
-      {!data && !isLoading && (
+      {(!showData || !data) && !isLoading && (
         <Pressable
           style={({ pressed }) => {
             return {
@@ -201,10 +296,11 @@ export default function Main() {
           }}
           onPress={() => {
             setSurfKey(prev => prev + 1);
+            setShowData(true);
           }}
         >
-          <Text style={styles.homeText}>
-            Should I surf today?
+          <Text style={{ ...styles.homeText, ...homeTextDetails }}>
+            Should{"\n"}I surf{"\n"}today?
           </Text>
         </Pressable>
       )}
@@ -256,6 +352,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#fff',
     borderStyle: 'solid'
+  },
+  deetsItemTextWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4
   },
   deetsItemText: {
     fontFamily: 'Abel_400Regular',
@@ -355,8 +458,6 @@ const styles = StyleSheet.create({
     maxWidth: 270,
     textDecorationLine: 'underline',
     fontFamily: 'BebasNeue_400Regular',
-    fontSize: 125,
-    lineHeight: 135,
     color: '#fff',
     textAlign: 'center',
   }
