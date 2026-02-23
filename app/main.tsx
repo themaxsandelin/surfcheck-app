@@ -9,6 +9,7 @@ import { captureRef } from 'react-native-view-shot';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
 import { DateTime } from 'luxon';
+import { File, Paths } from 'expo-file-system';
 
 // Components
 import Polygon from './icons/polygon';
@@ -201,11 +202,20 @@ export default function Main() {
                 onPress={async () => {
                   if (mediaLibraryPermission) {
                     if (mediaLibraryPermission.status === 'granted') {
-                      const screenshot = await captureRef(imageRef);
+                      const screenshot = await captureRef(imageRef, {
+                        format: 'jpg',
+                      });
+                      const namedFile = new File(Paths.cache, 'should-i-surf-today.jpg');
+                      if (namedFile.exists) {
+                        namedFile.delete();
+                      }
+                      const sourceFile = new File(screenshot);
+                      sourceFile.copy(namedFile);
                       await Share.share({
                         message: "Should I surf today?",
-                        url: screenshot,
+                        url: namedFile.uri,
                       });
+                      namedFile.delete();
                     } else if (mediaLibraryPermission.status === 'denied') {
                       if (mediaLibraryPermission.canAskAgain) {
                         await requestMediaLibraryPermission();
