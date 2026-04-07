@@ -2,10 +2,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+import Animated, { FadeIn, FadeOut, SlideInUp, SlideOutDown, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 // Views
 import LandingView from './views/landing';
@@ -133,62 +134,106 @@ export default function Main() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {showDisclaimer && (
-        <DisclaimerView
-          onClose={() => {
-            setShowDisclaimer(false);
-          }}
-        />
-      )}
-      {showLocationPicker && locations && !showDisclaimer && (
-        <LocationPickerView
-          locations={locations}
-          selectedLocation={selectedLocation}
-          userLocationData={userLocationData}
-          onSelectLocation={(location) => {
-            if (!selectedLocation) {
-              setSelectedLocation(location);
-              setSurfKey(prev => prev + 1);
-              setShowLocationPicker(false);
-              setShowData(true);
-            } else {
-              setSelectedLocation(location);
-              setShowLocationPicker(false);
-            }
-          }}
-        />
-      )}
-      {showData && shouldISurfData && !shouldISurfIsLoading && !showDisclaimer && (
-        <ResultsView
-          shouldISurfData={shouldISurfData}
-          isDeetsOpen={isDeetsOpen}
-          onReloadPress={() => {
-            setShowData(false);
-            setSurfKey(prev => prev + 1);
-          }}
-          onDeetsPress={() => {
-            setIsDeetsOpen(prev => !prev);
-          }}
-        />
-      )}
-      {shouldISurfData && isDeetsOpen && !showDisclaimer && (
-        <DeetsView
-          shouldISurfData={shouldISurfData}
-          onClose={() => {
-            setIsDeetsOpen(false);
-          }}
-        />
-      )}
-      {shouldISurfIsLoading && !showDisclaimer && (
-        <LoadingView />
-      )}
-      {(!showData || !shouldISurfData) && !shouldISurfIsLoading && !showLocationPicker && !showDisclaimer && (
-        <LandingView
-          shouldISurfPress={shouldISurfPress}
-          selectedLocation={selectedLocation}
-          setShowLocationPicker={setShowLocationPicker}
-        />
-      )}
+      <View style={styles.contentWrapper}>
+        {showDisclaimer && (
+          <Animated.View
+            key="disclaimer"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <DisclaimerView
+              onClose={() => {
+                setShowDisclaimer(false);
+              }}
+            />
+          </Animated.View>
+        )}
+        {showLocationPicker && locations && !showDisclaimer && (
+          <Animated.View
+            key="location-picker"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <LocationPickerView
+              locations={locations}
+              selectedLocation={selectedLocation}
+              userLocationData={userLocationData}
+              onSelectLocation={(location) => {
+                if (!selectedLocation) {
+                  setSelectedLocation(location);
+                  setSurfKey(prev => prev + 1);
+                  setShowLocationPicker(false);
+                  setShowData(true);
+                } else {
+                  setSelectedLocation(location);
+                  setShowLocationPicker(false);
+                }
+              }}
+            />
+          </Animated.View>
+        )}
+        {showData && shouldISurfData && !isDeetsOpen && !shouldISurfIsLoading && !showDisclaimer && (
+          <Animated.View
+            key="results"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <ResultsView
+              shouldISurfData={shouldISurfData}
+              isDeetsOpen={isDeetsOpen}
+              onReloadPress={() => {
+                setShowData(false);
+                setSurfKey(prev => prev + 1);
+              }}
+              onDeetsPress={() => {
+                setIsDeetsOpen(prev => !prev);
+              }}
+            />
+          </Animated.View>
+        )}
+        {shouldISurfData && isDeetsOpen && !showDisclaimer && (
+          <Animated.View
+            key="deets"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <DeetsView
+              shouldISurfData={shouldISurfData}
+              onClose={() => {
+                setIsDeetsOpen(false);
+              }}
+            />
+          </Animated.View>
+        )}
+        {shouldISurfIsLoading && !showDisclaimer && (
+          <Animated.View
+            key="loading"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <LoadingView />
+          </Animated.View>
+        )}
+        {(!showData || !shouldISurfData) && !shouldISurfIsLoading && !showLocationPicker && !showDisclaimer && (
+          <Animated.View
+            key="landing"
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={StyleSheet.absoluteFill}
+          >
+            <LandingView
+              shouldISurfPress={shouldISurfPress}
+              selectedLocation={selectedLocation}
+              setShowLocationPicker={setShowLocationPicker}
+            />
+          </Animated.View>
+        )}
+      </View>
       <Footer
         onPress={() => {
           setShowDisclaimer((current) => !current);
@@ -207,5 +252,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
+  },
+  contentWrapper: {
+    width: '100%',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    position: 'relative',
   }
 });
