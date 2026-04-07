@@ -43,6 +43,12 @@
           },
           "imageWidth": 200
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) uses your location to show you surf spots close to you."
+        }
       ]
     ],
     "extra": {

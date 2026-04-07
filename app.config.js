@@ -1,13 +1,9 @@
 module.exports = ({ config }) => {
-  const fullConfig = {
+  return {
     ...config,
     extra: {
       ...config.extra,
-      apiKey: process.env.EXPO_BUILD_API_KEY
+      apiKey: process.env.EXPO_BUILD_API_KEY,
     }
-  };
-
-  return {
-    ...fullConfig,
   };
 };

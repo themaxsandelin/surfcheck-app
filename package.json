@@ -11,12 +11,14 @@
   "dependencies": {
     "@expo-google-fonts/abel": "^0.4.0",
     "@expo-google-fonts/bebas-neue": "^0.4.1",
+    "@react-native-async-storage/async-storage": "^3.0.1",
     "@tabler/icons-react-native": "^3.36.1",
     "@tanstack/react-query": "^5.90.21",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
     "expo-file-system": "~19.0.21",
     "expo-font": "~14.0.11",
+    "expo-location": "~19.0.8",
     "expo-media-library": "~18.2.1",
     "expo-sharing": "~14.0.8",
     "expo-splash-screen": "~31.0.13",
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@types/luxon": "^3.7.1",
     "@types/react": "~19.1.0",
+    "dotenv": "^17.3.1",
     "typescript": "~5.9.2"
   },
   "private": true
