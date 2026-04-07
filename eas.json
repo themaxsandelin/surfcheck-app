@@ -4,6 +4,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
+        "EXPO_BUILD_API_KEY": "939021ac-8cdf-4f91-b375-dbea75c1e3ee",
         "EXPO_PUBLIC_API_URI": "http://localhost:3000"
       }
     },
@@ -12,6 +13,7 @@
     },
     "production": {
       "env": {
+        "EXPO_BUILD_API_KEY": "939021ac-8cdf-4f91-b375-dbea75c1e3ee",
         "EXPO_PUBLIC_API_URI": "https://surfcheck-backend-production.up.railway.app"
       }
     }

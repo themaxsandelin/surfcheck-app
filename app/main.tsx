@@ -6,7 +6,7 @@ import { StyleSheet, Alert, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
-import Animated, { FadeIn, FadeOut, SlideInUp, SlideOutDown, FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 // Views
 import LandingView from './views/landing';
