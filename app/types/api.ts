@@ -37,7 +37,7 @@ export interface ApiLocation {
   name: string;
   lat: number;
   lon: number;
-  distanceFromUser?: string;
+  distanceFromUserKm?: number;
 }
 
 export interface LocationsApiResponse {

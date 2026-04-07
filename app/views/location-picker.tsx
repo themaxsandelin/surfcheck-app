@@ -1,5 +1,5 @@
 // Dependencies
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { IconSearch } from '@tabler/icons-react-native';
 import { FlatList, TextInput } from 'react-native';
@@ -19,29 +19,37 @@ interface LocationPickerProps {
 }
 
 export default function LocationPickerView({ locations, selectedLocation, userLocationData, onSelectLocation }: LocationPickerProps) {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   const locationsMapped = useMemo(() => {
     if (!locations) {
       return [];
     }
     if (!userLocationData) {
-      return locations;
+      return locations.filter((location) => location.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }
 
     return locations.map((location) => {
       const distanceFromUser = getDistanceKm(userLocationData.coords.latitude, userLocationData.coords.longitude, location.lat, location.lon);
       return {
         ...location,
-        distanceFromUser: `~ ${distanceFromUser.toFixed(0)}km`,
+        distanceFromUserKm: distanceFromUser
       };
-    });
-  }, [locations, userLocationData]);
+    }).sort((a, b) => a.distanceFromUserKm - b.distanceFromUserKm).filter((location) => location.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [locations, userLocationData, searchQuery]);
   
   return (
     <View style={styles.locationPickerContainer}>
       <Text style={styles.locationPickerTitle}>Pick a spot</Text>
-      <View style={{ width: '100%', height: 50, position: 'relative', marginBottom: 20 }}>
-        <IconSearch size={24} stroke="#fff" style={{ width: 24, height: 24, position: 'absolute', left: 12, top: 13, zIndex: 2 }} />
-        <TextInput style={{ ...styles.locationPickerSearchInput }} placeholder="Search for a spot" placeholderTextColor="#fff" />
+      <View style={styles.locationPickerSearchWrapper}>
+        <IconSearch size={24} stroke="#fff" style={styles.locationPickerSearchIcon} />
+        <TextInput
+          style={{ ...styles.locationPickerSearchInput }}
+          placeholder="Search for a spot"
+          placeholderTextColor="#fff"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
       <FlatList
         horizontal={false}
@@ -68,8 +76,8 @@ export default function LocationPickerView({ locations, selectedLocation, userLo
             }}
           >
             <Text style={styles.locationPickerItemText}>{item.name}</Text>
-            {item.distanceFromUser && (
-              <Text style={styles.locationPickerItemDistance}>{item.distanceFromUser}</Text>
+            {item.distanceFromUserKm && (
+              <Text style={styles.locationPickerItemDistance}>{`~ ${item.distanceFromUserKm.toFixed(0)}km`}</Text>
             )}
           </Pressable>
         )}
@@ -94,6 +102,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 700,
     marginBottom: 32
+  },
+  locationPickerSearchWrapper: {
+    width: '100%',
+    height: 50,
+    position: 'relative',
+    marginBottom: 20
+  },
+  locationPickerSearchIcon: {
+    width: 24,
+    height: 24,
+    position: 'absolute',
+    left: 12,
+    top: 13,
+    zIndex: 2
   },
   locationPickerSearchInput: {
     width: '100%',
