@@ -1,5 +1,8 @@
 // Dependencies
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
+
+// Components
+import Text from '../components/text';
 
 // Icons
 import Cross from '../icons/cross';

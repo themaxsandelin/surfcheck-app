@@ -1,7 +1,10 @@
 // Dependencies
 import { useMemo } from 'react';
-import { View, Text, Pressable, Dimensions, StyleSheet } from 'react-native';
+import { View, Pressable, Dimensions, StyleSheet } from 'react-native';
 import { IconPinned } from '@tabler/icons-react-native';
+
+// Components
+import Text from '../components/text';
 
 // Types
 import { ApiLocation } from '../types/api';
@@ -21,15 +24,10 @@ export default function LandingView({ shouldISurfPress, selectedLocation, setSho
         fontSize: 95,
         lineHeight: 105,
       };
-    } else if (SCREEN_WIDTH < 440) {
-      return {
-        fontSize: 110,
-        lineHeight: 120,
-      };
     }
     return {
-      fontSize: 125,
-      lineHeight: 135,
+      fontSize: 110,
+      lineHeight: 120,
     };
   }, [SCREEN_WIDTH]);
 

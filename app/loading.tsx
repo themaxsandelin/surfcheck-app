@@ -1,6 +1,9 @@
 // Dependencies
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+
+// Components
+import Text from './components/text';
 
 export default function Loading() {
   return (

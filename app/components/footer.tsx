@@ -1,5 +1,8 @@
 // Dependencies
-import { Text, StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
+
+// Components
+import Text from './text';
 
 interface FooterProps {
   onPress: () => void;

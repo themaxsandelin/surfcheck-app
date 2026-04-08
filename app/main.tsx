@@ -14,16 +14,17 @@ import LocationPickerView from './views/location-picker';
 import DeetsView from './views/deets';
 import ResultsView from './views/results';
 import LoadingView from './views/loading';
+import DisclaimerView from './views/disclaimer';
 
 // Components
 import Footer from './components/footer';
 
 // Types
 import { LocationsApiResponse, ShouldISurfApiResponse, ApiLocation } from './types/api';
-import DisclaimerView from './views/disclaimer';
 
 const API_URI = process.env.EXPO_PUBLIC_API_URI;
-const CACHE_KEY = 'shouldisurf-responses';
+const SURF_CHECK_CACHE_KEY = 'shouldisurf-responses';
+const LOCATION_CACHE_KEY = 'location';
 
 export default function Main() {
   const lastCachedKey = useRef<number>(-1);
@@ -93,9 +94,14 @@ export default function Main() {
 
   // Load cached previous responses on mount
   useEffect(() => {
-    AsyncStorage.getItem(CACHE_KEY).then((cached) => {
+    AsyncStorage.getItem(SURF_CHECK_CACHE_KEY).then((cached) => {
       if (cached) {
         setPreviousResponses(JSON.parse(cached));
+      }
+    });
+    AsyncStorage.getItem(LOCATION_CACHE_KEY).then((locationCached) => {
+      if (locationCached) {
+        setSelectedLocation(JSON.parse(locationCached));
       }
     });
   }, []);
@@ -108,7 +114,7 @@ export default function Main() {
         updated.shift();
       }
       setPreviousResponses(updated);
-      AsyncStorage.setItem(CACHE_KEY, JSON.stringify(updated));
+      AsyncStorage.setItem(SURF_CHECK_CACHE_KEY, JSON.stringify(updated));
     }
   }, [shouldISurfData, surfKey]);
 
@@ -131,6 +137,20 @@ export default function Main() {
       setShowData(true);
     }
   }, [locationAsked, selectedLocation, setShowLocationPicker, setSurfKey, setShowData]);
+
+  const saveLocation = useCallback(async (location: ApiLocation) => {
+    if (!selectedLocation) {
+      setSelectedLocation(location);
+      setSurfKey(prev => prev + 1);
+      setShowLocationPicker(false);
+      setShowData(true);
+    } else {
+      setSelectedLocation(location);
+      setShowLocationPicker(false);
+    }
+
+    AsyncStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(location));
+  }, [selectedLocation, setSelectedLocation, setSurfKey, setShowLocationPicker, setShowData, AsyncStorage]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -161,15 +181,7 @@ export default function Main() {
               selectedLocation={selectedLocation}
               userLocationData={userLocationData}
               onSelectLocation={(location) => {
-                if (!selectedLocation) {
-                  setSelectedLocation(location);
-                  setSurfKey(prev => prev + 1);
-                  setShowLocationPicker(false);
-                  setShowData(true);
-                } else {
-                  setSelectedLocation(location);
-                  setShowLocationPicker(false);
-                }
+                saveLocation(location);
               }}
             />
           </Animated.View>

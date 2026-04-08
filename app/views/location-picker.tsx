@@ -1,9 +1,12 @@
 // Dependencies
 import { useMemo, useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { IconSearch } from '@tabler/icons-react-native';
 import { FlatList, TextInput } from 'react-native';
 import * as Location from 'expo-location';
+
+// Components
+import Text from '../components/text';
 
 // Utils
 import { getDistanceKm } from '../utils/location';

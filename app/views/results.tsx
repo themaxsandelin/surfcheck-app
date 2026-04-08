@@ -1,10 +1,13 @@
 // Dependencies
 import { useMemo, useRef } from 'react';
-import { View, Text, Pressable, StyleSheet, Dimensions, Alert, Linking, Share } from 'react-native';
+import { View, Pressable, StyleSheet, Dimensions, Alert, Linking, Share } from 'react-native';
 import { IconReload, IconChartBar, IconShare2 } from '@tabler/icons-react-native';
 import { captureRef } from 'react-native-view-shot';
 import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+
+// Components
+import Text from '../components/text';
 
 // Types
 import { ShouldISurfApiResponse } from '../types/api';
