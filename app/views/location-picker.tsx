@@ -57,7 +57,7 @@ export default function LocationPickerView({ locations, selectedLocation, userLo
       <FlatList
         horizontal={false}
         style={styles.locationPickerList}
-        scrollEnabled={false}
+        scrollEnabled={true}
         data={locationsMapped}
         keyExtractor={(item) => item.name}
         renderItem={({ item, index }) => (
@@ -72,9 +72,6 @@ export default function LocationPickerView({ locations, selectedLocation, userLo
               };
             }}
             onPress={() => {
-              if (selectedLocation?.name === item.name) {
-                return;
-              }
               onSelectLocation(item);
             }}
           >
@@ -99,11 +96,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 27,
   },
   locationPickerTitle: {
-    fontFamily: 'SF Pro Text',
-    fontSize: 20,
-    lineHeight: 25,
+    width: '100%',
+    fontFamily: 'Abel_400Regular',
+    fontSize: 45,
+    lineHeight: 58,
     color: '#fff',
-    fontWeight: 700,
+    textAlign: 'center',
+    fontWeight: 400,
+    marginTop: 19,
     marginBottom: 32
   },
   locationPickerSearchWrapper: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B4B4B',
     paddingLeft: 44,
     color: '#fff',
-    fontFamily: 'SF Pro Text',
+    fontFamily: 'Abel_400Regular',
     fontSize: 17,
     lineHeight: 22,
     fontWeight: 400,
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   },
   locationPickerList: {
     width: '100%',
+    maxHeight: 300,
     flexGrow: 0,
     boxSizing: 'border-box'
   },
@@ -153,14 +154,14 @@ const styles = StyleSheet.create({
     borderColor: 'transparent'
   },
   locationPickerItemText: {
-    fontFamily: 'SF Pro Text',
+    fontFamily: 'Abel_400Regular',
     fontSize: 17,
     lineHeight: 22,
     fontWeight: 400,
     color: '#fff'
   },
   locationPickerItemDistance: {
-    fontFamily: 'SF Pro Text',
+    fontFamily: 'Abel_400Regular',
     fontSize: 15,
     lineHeight: 20,
     fontWeight: 400,

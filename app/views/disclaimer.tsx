@@ -17,7 +17,7 @@ export default function DisclaimerView({ onClose }: DisclaimerViewProps) {
       <View style={styles.disclaimerTopWrapper}></View>
       <View style={styles.disclaimerContentWrapper}>
         <Text style={styles.disclaimerContentText}>
-          Can’t believe we even have to say this.{"\n\n"}
+          Can’t believe we have to say this.{"\n\n"}
           Use good judgment.{"\n\n"}
           If it doesn’t feel right, don’t go.
         </Text>

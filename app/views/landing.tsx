@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   homeLocationButtonText: {
     flex: 1,
     textAlign: 'center',
-    fontFamily: 'SF Pro Text',
+    fontFamily: 'Abel_400Regular',
     fontSize: 17,
     lineHeight: 22,
     fontWeight: 400,
