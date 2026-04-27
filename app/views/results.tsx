@@ -89,43 +89,43 @@ export default function ResultsView({ shouldISurfData, isDeetsOpen, onReloadPres
         <View style={{ ...styles.dataButtonWrapper, paddingLeft: 8 }}>
           <Pressable
             onPress={async () => {
-              if (mediaLibraryPermission) {
-                if (mediaLibraryPermission.status === 'granted') {
-                  const screenshot = await captureRef(imageRef, {
-                    format: 'jpg',
-                  });
-                  const namedFile = new File(Paths.cache, 'should-i-surf-today.jpg');
-                  if (namedFile.exists) {
-                    namedFile.delete();
-                  }
-                  const sourceFile = new File(screenshot);
-                  sourceFile.copy(namedFile);
-                  await Share.share({
-                    message: "Should I surf today?",
-                    url: namedFile.uri,
-                  });
-                  namedFile.delete();
-                } else if (mediaLibraryPermission.status === 'denied') {
-                  if (mediaLibraryPermission.canAskAgain) {
-                    await requestMediaLibraryPermission();
-                  } else {
-                    Alert.alert("Action Required", "Please grant permission to your device's media library to share the screenshot.", [
-                      {
-                        text: 'Cancel',
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'Open Settings',
-                        onPress: () => {
-                          Linking.openSettings();
-                        },
-                      }
-                    ]);
-                  }
-                }
-              } else {
+              if (!mediaLibraryPermission) {
                 await requestMediaLibraryPermission();
               }
+              if (mediaLibraryPermission && mediaLibraryPermission.status !== 'granted') {
+                if (mediaLibraryPermission.canAskAgain) {
+                  await requestMediaLibraryPermission();
+                } else {
+                  Alert.alert("Action Required", "Please grant permission to your device's media library to share the screenshot.", [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Open Settings',
+                      onPress: () => {
+                        Linking.openSettings();
+                      },
+                    }
+                  ]);
+                  return;
+                }
+              }
+
+              const screenshot = await captureRef(imageRef, {
+                format: 'jpg',
+              });
+              const namedFile = new File(Paths.cache, 'should-i-surf-today.jpg');
+              if (namedFile.exists) {
+                namedFile.delete();
+              }
+              const sourceFile = new File(screenshot);
+              sourceFile.copy(namedFile);
+              await Share.share({
+                message: "Should I surf today?",
+                url: namedFile.uri,
+              });
+              namedFile.delete();
             }}
             style={({ pressed }) => {
               return {

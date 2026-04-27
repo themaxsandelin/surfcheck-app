@@ -10,9 +10,11 @@ import Text from '../components/text';
 import Polygon from '../icons/polygon';
 import Arrow from '../icons/arrow';
 
+// Utils
+import { getWeatherEmoji } from '../utils/weather';
+
 // Types
 import { ShouldISurfApiResponse } from '../types/api';
-import { getWeatherEmoji } from '../utils/weather';
 
 interface DeetsViewProps {
   shouldISurfData: ShouldISurfApiResponse;
@@ -32,17 +34,15 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
     if (!shouldISurfData) {
       return '';
     }
-    if (shouldISurfData.weatherData.tide.height === 0) {
-      return 'Even';
-    }
-
-    return shouldISurfData.weatherData.tide.height < 0 ? 'Low' : 'High';
+    return shouldISurfData.weatherData.tide.type === 'L' ? 'Low' : 'High';
   }, [shouldISurfData]);
 
   const deets = useMemo(() => {
     if (!shouldISurfData) {
       return [];
     }
+
+    const tideTime = DateTime.fromISO(shouldISurfData.weatherData.tide.time, { zone: 'UTC' }).toLocal();
 
     return [
       {
@@ -51,7 +51,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
       },
       {
         label: 'Wave Height',
-        value: `${shouldISurfData.weatherData.waves.height}${shouldISurfData.weatherData.waves.heightUnit}`,
+        value: `${Math.floor(shouldISurfData.weatherData.waves.height)}-${Math.ceil(shouldISurfData.weatherData.waves.height)}${shouldISurfData.weatherData.waves.heightUnit}`,
       },
       {
         label: 'Swell Direction',
@@ -67,7 +67,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
       },
       {
         label: 'Tide',
-        value: `${shouldISurfData.weatherData.tide.height}${shouldISurfData.weatherData.tide.heightUnit} / ${tideHeight} @ ${dataTime}`,
+        value: `${shouldISurfData.weatherData.tide.height}${shouldISurfData.weatherData.tide.heightUnit} ${tideHeight} @ ${tideTime.toFormat('h:mm a')}`,
       },
       {
         label: 'Conditions',
@@ -81,7 +81,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
   }, [tideHeight]);
 
   const windRotate = useMemo(() => {
-    return shouldISurfData.weatherData.wind.directionDegrees;
+    return shouldISurfData.weatherData.wind.directionDegrees + 180;
   }, [shouldISurfData]);
 
   return (

@@ -54,34 +54,41 @@ export default function LocationPickerView({ locations, selectedLocation, userLo
           onChangeText={setSearchQuery}
         />
       </View>
-      <FlatList
-        horizontal={false}
-        style={styles.locationPickerList}
-        scrollEnabled={true}
-        data={locationsMapped}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item, index }) => (
-          <Pressable
-            style={({ pressed }) => {
-              return {
-                ...styles.locationPickerItem,
-                marginBottom: index === locations.length - 1 ? 0 : 2,
-                backgroundColor: selectedLocation?.name === item.name ? 'rgba(120, 120, 120, 0.3)' : 'rgba(120, 120, 120, 0.2)',
-                borderColor: selectedLocation?.name === item.name ? '#fff' : 'transparent',
-                opacity: selectedLocation?.name !== item.name && pressed ? 0.75 : 1,
-              };
-            }}
-            onPress={() => {
-              onSelectLocation(item);
-            }}
-          >
-            <Text style={styles.locationPickerItemText}>{item.name}</Text>
-            {item.distanceFromUserKm && (
-              <Text style={styles.locationPickerItemDistance}>{`~ ${item.distanceFromUserKm.toFixed(0)}km`}</Text>
-            )}
-          </Pressable>
-        )}
-      />
+      {locationsMapped.length > 0 && (
+        <FlatList
+          horizontal={false}
+          style={styles.locationPickerList}
+          scrollEnabled={true}
+          data={locationsMapped}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item, index }) => (
+            <Pressable
+              style={({ pressed }) => {
+                return {
+                  ...styles.locationPickerItem,
+                  marginBottom: index === locations.length - 1 ? 0 : 2,
+                  backgroundColor: selectedLocation?.name === item.name ? 'rgba(120, 120, 120, 0.3)' : 'rgba(120, 120, 120, 0.2)',
+                  borderColor: selectedLocation?.name === item.name ? '#fff' : 'transparent',
+                  opacity: selectedLocation?.name !== item.name && pressed ? 0.75 : 1,
+                };
+              }}
+              onPress={() => {
+                onSelectLocation(item);
+              }}
+            >
+              <Text style={styles.locationPickerItemText}>{item.name}</Text>
+              {item.distanceFromUserKm && (
+                <Text style={styles.locationPickerItemDistance}>{`~ ${item.distanceFromUserKm.toFixed(0)}km`}</Text>
+              )}
+            </Pressable>
+          )}
+        />
+      )}
+      {locationsMapped.length === 0 && (
+        <View style={styles.locationPickerNoResultsContainer}>
+          <Text style={styles.locationPickerNoResults}>We're still building our surf spot database.{"\n"}Keep paddling.</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -166,5 +173,20 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: 400,
     color: '#ccc'
+  },
+  locationPickerNoResultsContainer: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20
+  },
+  locationPickerNoResults: {
+    fontFamily: 'Abel_400Regular',
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: 400,
+    color: '#fff',
+    textAlign: 'center'
   }
 });

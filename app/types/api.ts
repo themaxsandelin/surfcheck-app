@@ -33,6 +33,8 @@ export interface ShouldISurfApiResponse {
     tide: {
       height: number;
       heightUnit: string;
+      type: 'H' | 'L';
+      time: string;
     };
   };
 };
