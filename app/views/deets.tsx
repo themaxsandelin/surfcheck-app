@@ -67,7 +67,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
       },
       {
         label: 'Tide',
-        value: `${shouldISurfData.weatherData.tide.height}${shouldISurfData.weatherData.tide.heightUnit} ${tideHeight} @ ${tideTime.toFormat('h:mm a')}`,
+        value: `${shouldISurfData.weatherData.tide.height}${shouldISurfData.weatherData.tide.heightUnit} / ${tideHeight} @ ${tideTime.toFormat('h:mm a')}`,
       },
       {
         label: 'Conditions',

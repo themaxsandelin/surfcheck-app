@@ -54,7 +54,7 @@ export default function ResultsView({ shouldISurfData, isDeetsOpen, onReloadPres
         <View style={styles.dataContentWrapper} ref={imageRef} collapsable={false}>
           <Text style={{ ...styles.dataContentYesText, ...homeTextDetails }}>Yes</Text>
           <Text style={{ ...styles.dataContentResultText }}>
-            {shouldISurfData.response}
+            “{shouldISurfData.response.replace(/'/g, "\u2019")}”
           </Text>
         </View>
         <Pressable
@@ -82,7 +82,7 @@ export default function ResultsView({ shouldISurfData, isDeetsOpen, onReloadPres
             }}
           >
             <IconChartBar size={18} stroke="#fff" />
-            <Text style={styles.dataButtonText}>The Deets</Text>
+            <Text style={styles.dataButtonText}>Conditions</Text>
           </Pressable>
         </View>
 

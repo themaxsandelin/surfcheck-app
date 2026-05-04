@@ -14,7 +14,6 @@ import LocationPickerView from './views/location-picker';
 import DeetsView from './views/deets';
 import ResultsView from './views/results';
 import LoadingView from './views/loading';
-import DisclaimerView from './views/disclaimer';
 
 // Components
 import Footer from './components/footer';
@@ -33,7 +32,6 @@ export default function Main() {
   const [surfKey, setSurfKey] = useState<number>(0);
   const [isDeetsOpen, setIsDeetsOpen] = useState<boolean>(false);
   const [showData, setShowData] = useState<boolean>(false);
-  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(false);
 
   const [showLocationPicker, setShowLocationPicker] = useState<boolean>(false);
   const [locationAsked, setLocationAsked] = useState<boolean>(false);
@@ -155,21 +153,7 @@ export default function Main() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentWrapper}>
-        {showDisclaimer && (
-          <Animated.View
-            key="disclaimer"
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(200)}
-            style={StyleSheet.absoluteFill}
-          >
-            <DisclaimerView
-              onClose={() => {
-                setShowDisclaimer(false);
-              }}
-            />
-          </Animated.View>
-        )}
-        {showLocationPicker && locations && !showDisclaimer && (
+        {showLocationPicker && locations && (
           <Animated.View
             key="location-picker"
             entering={FadeIn.duration(200)}
@@ -186,7 +170,7 @@ export default function Main() {
             />
           </Animated.View>
         )}
-        {showData && shouldISurfData && !isDeetsOpen && !shouldISurfIsLoading && !showDisclaimer && (
+        {showData && shouldISurfData && !isDeetsOpen && !shouldISurfIsLoading && (
           <Animated.View
             key="results"
             entering={FadeIn.duration(200)}
@@ -206,7 +190,7 @@ export default function Main() {
             />
           </Animated.View>
         )}
-        {shouldISurfData && isDeetsOpen && !showDisclaimer && (
+        {shouldISurfData && isDeetsOpen && (
           <Animated.View
             key="deets"
             entering={FadeIn.duration(200)}
@@ -221,7 +205,7 @@ export default function Main() {
             />
           </Animated.View>
         )}
-        {shouldISurfIsLoading && !showDisclaimer && (
+        {shouldISurfIsLoading && (
           <Animated.View
             key="loading"
             entering={FadeIn.duration(200)}
@@ -231,7 +215,7 @@ export default function Main() {
             <LoadingView />
           </Animated.View>
         )}
-        {(!showData || !shouldISurfData) && !shouldISurfIsLoading && !showLocationPicker && !showDisclaimer && (
+        {(!showData || !shouldISurfData) && !shouldISurfIsLoading && !showLocationPicker && (
           <Animated.View
             key="landing"
             entering={FadeIn.duration(200)}
@@ -246,11 +230,7 @@ export default function Main() {
           </Animated.View>
         )}
       </View>
-      <Footer
-        onPress={() => {
-          setShowDisclaimer((current) => !current);
-        }}
-      />
+      <Footer />
     </SafeAreaView>
   );
 }

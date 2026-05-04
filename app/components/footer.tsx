@@ -1,14 +1,11 @@
 // Dependencies
 import { StyleSheet, Pressable } from 'react-native';
+import { Linking } from 'react-native';
 
 // Components
 import Text from './text';
 
-interface FooterProps {
-  onPress: () => void;
-}
-
-export default function Footer({ onPress }: FooterProps) {
+export default function Footer() {
   return (
     <Pressable
       style={({ pressed }) => {
@@ -17,10 +14,12 @@ export default function Footer({ onPress }: FooterProps) {
           opacity: pressed ? 0.75 : 1,
         };
       }}
-      onPress={onPress}
+      onPress={() => {
+        Linking.openURL("mailto:christophersriggs@gmail.com?subject=Should I Surf Today?");
+      }}
     >
       <Text style={styles.footerText}>© {new Date().getFullYear()} Should I Surf Today</Text>
-      <Text style={{ ...styles.footerText, ...styles.footerTextHighlight }}>Powered by Optimism</Text>
+      <Text style={{ ...styles.footerText, ...styles.footerTextHighlight }}>Feedback?</Text>
     </Pressable>
   );
 }
@@ -30,15 +29,16 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 10,
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 16,
   },
   footerText: {
     fontFamily: 'SF Pro Text',
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 11,
+    lineHeight: 14,
     fontWeight: 400,
     color: '#848484'
   },
