@@ -44,17 +44,22 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
 
     const tideTime = DateTime.fromISO(shouldISurfData.weatherData.tide.time, { zone: 'UTC' }).toLocal();
 
+    const rawTideHeight = Number(shouldISurfData.weatherData.tide.height);
+    const tideHeightValue = Number.isFinite(rawTideHeight)
+      ? parseFloat(rawTideHeight.toFixed(1))
+      : null;
+
     return [
       {
         label: 'Location',
         value: shouldISurfData.weatherData.location.name,
       },
       {
-        label: 'Wave Height',
+        label: 'Energy',
         value: `${Math.floor(shouldISurfData.weatherData.waves.height)}-${Math.ceil(shouldISurfData.weatherData.waves.height)}${shouldISurfData.weatherData.waves.heightUnit}`,
       },
       {
-        label: 'Swell Direction',
+        label: 'Swell',
         value: shouldISurfData.weatherData.swell.direction,
       },
       {
@@ -67,7 +72,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
       },
       {
         label: 'Tide',
-        value: `${shouldISurfData.weatherData.tide.height}${shouldISurfData.weatherData.tide.heightUnit} / ${tideHeight} @ ${tideTime.toFormat('h:mm a')}`,
+        value: `${tideHeightValue}${shouldISurfData.weatherData.tide.heightUnit} / ${tideHeight} @ ${tideTime.toFormat('h:mm a').toLowerCase()}`,
       },
       {
         label: 'Conditions',
