@@ -56,7 +56,7 @@ export default function DeetsView({ shouldISurfData, onClose }: DeetsViewProps) 
       },
       {
         label: 'Energy',
-        value: `${Math.floor(shouldISurfData.weatherData.waves.height)}-${Math.ceil(shouldISurfData.weatherData.waves.height)}${shouldISurfData.weatherData.waves.heightUnit}`,
+        value: shouldISurfData.weatherData.waves.band,
       },
       {
         label: 'Swell',

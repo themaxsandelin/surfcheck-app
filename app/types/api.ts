@@ -21,6 +21,7 @@ export interface ShouldISurfApiResponse {
     waves: {
       height: number;
       heightUnit: string;
+      band: string;
       direction: string;
       directionDegrees: number;
     };

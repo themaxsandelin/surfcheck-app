@@ -59,6 +59,7 @@ export default function Main() {
         });
         if (!response.ok) {
           Alert.alert("Error", "Ooops. Looks like we're having some technical difficulties. Please try again later.");
+          console.error(response);
           return null;
         }
         const responseData = await response.json();
@@ -149,6 +150,8 @@ export default function Main() {
 
     AsyncStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(location));
   }, [selectedLocation, setSelectedLocation, setSurfKey, setShowLocationPicker, setShowData, AsyncStorage]);
+
+  console.log('shouldISurfData', JSON.stringify(shouldISurfData, null, 2), );
 
   return (
     <SafeAreaView style={styles.container}>

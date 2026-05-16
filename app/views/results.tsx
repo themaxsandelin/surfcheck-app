@@ -54,7 +54,7 @@ export default function ResultsView({ shouldISurfData, isDeetsOpen, onReloadPres
         <View style={styles.dataContentWrapper} ref={imageRef} collapsable={false}>
           <Text style={{ ...styles.dataContentYesText, ...homeTextDetails }}>Yes</Text>
           <Text style={{ ...styles.dataContentResultText }}>
-            “{shouldISurfData.response.replace(/'/g, "\u2019")}”
+            {shouldISurfData.response.replace(/'/g, "\u2019")}
           </Text>
         </View>
         <Pressable
