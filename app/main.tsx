@@ -151,8 +151,6 @@ export default function Main() {
     AsyncStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(location));
   }, [selectedLocation, setSelectedLocation, setSurfKey, setShowLocationPicker, setShowData, AsyncStorage]);
 
-  console.log('shouldISurfData', JSON.stringify(shouldISurfData, null, 2), );
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentWrapper}>
