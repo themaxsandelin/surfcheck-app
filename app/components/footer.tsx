@@ -15,7 +15,7 @@ export default function Footer() {
         };
       }}
       onPress={() => {
-        Linking.openURL("mailto:christophersriggs@gmail.com?subject=Should I Surf Today?");
+        Linking.openURL("mailto:feedback@shouldisurf.today?subject=Should I Surf Today?");
       }}
     >
       <Text style={styles.footerText}>© {new Date().getFullYear()} Should I Surf Today</Text>
