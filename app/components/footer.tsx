@@ -18,7 +18,7 @@ export default function Footer() {
         Linking.openURL("mailto:feedback@shouldisurf.today?subject=Should I Surf Today?");
       }}
     >
-      <Text style={styles.footerText}>© {new Date().getFullYear()} Should I Surf Today</Text>
+      <Text style={styles.footerText}>© Should I Surf Today</Text>
       <Text style={{ ...styles.footerText, ...styles.footerTextHighlight }}>Feedback?</Text>
     </Pressable>
   );

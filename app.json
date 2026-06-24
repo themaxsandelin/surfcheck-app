@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Should I Surf Today",
-    "slug": "surfcheck-app",
+    "slug": "should-i-surf-today",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.maxsandelin.surfcheckapp",
+      "bundleIdentifier": "today.shouldisurf.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -25,7 +25,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.maxsandelin.surfcheckapp"
+      "package": "today.shouldisurf.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -53,7 +53,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "a300a911-16bd-437b-8d6a-5d4b78cbf1db"
+        "projectId": "8da8e818-1143-4b24-b362-e1cf069ae2aa"
       }
     }
   }
